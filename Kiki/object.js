@@ -174,7 +174,7 @@ var legs = {
         var vertices = [];
         var indices = [];
         var colors = [];
-        var radius = 0.95; // Adjust the radius of the sphere as needed
+        var radius = 0.85; // Adjust the radius of the sphere as needed
     
         var PI = Math.PI;
         var segments = 30;
@@ -217,7 +217,7 @@ var legs = {
         var vertices = [];
         var indices = [];
         var colors = [];
-        var radius = 0.95; // Adjust the radius of the sphere as needed
+        var radius = 0.85; // Adjust the radius of the sphere as needed
     
         var PI = Math.PI;
         var segments = 30;
@@ -257,7 +257,7 @@ var legs = {
         return [vertices, indices,colors]
     },
     right_leg: function(){
-        var radius = 0.95; // Adjust the radius of the sphere as needed
+        var radius = 0.85; // Adjust the radius of the sphere as needed
 
         var PI = Math.PI;
         var segments = 30;
@@ -299,7 +299,7 @@ var legs = {
         return [vertices1,indices1,colors1]
     },
     right_leg2: function(){
-        var radius = 0.95; // Adjust the radius of the sphere as needed
+        var radius = 0.85; // Adjust the radius of the sphere as needed
 
         var PI = Math.PI;
         var segments = 30;
@@ -429,12 +429,96 @@ var bodys = {
         }
         return [vertices,indices,colors]
     },
-    cloth:function(){
-
+    clothw:function(){
+        var vertices = [];
+        var normals = [];
+        var texCoords = [];
+        var indices = [];
+        var colors = [];
+        var radius = 2.05; // Adjust the radius of the sphere as needed
+        var sectorCount = 144; // Number of sectors
+        var stackCount = 64; // Number of stacks
+ 
+        var PI = Math.PI;
+        var sectorStep = 2 * PI / sectorCount;
+        var stackStep = PI / stackCount;
+        var sectorAngle, stackAngle;
+        var segments = 30;
+        var height = 3;
+ 
+        for (var i = 0; i <= segments; i++) {
+            var theta = (i / segments) * 2 * Math.PI;
+            var x = radius * Math.cos(theta);
+            var y = radius * Math.sin(theta);
+            vertices.push(x*1.2 , y*1.2 , -0.38, 0.1, 0.1, 0.2); // Bottom circle
+             // Apex
+             colors.push(0.0, 0.4, 0.0);
+            //  cone_vertex.push(0.45, 0, height, 0.1, 0.1, 0.2);
+            vertices.push(x*0.5, y*0.5, height , 1, 1, 1);
+            colors.push(0.0, 0.4, 0.0);
+        }
+ 
+ 
+        for (var i = 29; i <= stackCount; ++i) {
+            stackAngle = PI / 2 - i * stackStep;
+            var xy = radius * Math.cos(stackAngle) ;
+            var z = radius * Math.sin(stackAngle);
+ 
+            for (var j = 0; j <= sectorCount; ++j) {
+                sectorAngle = j * sectorStep;
+                var x = xy * Math.cos(sectorAngle) * 1.1;
+                var y = xy * Math.sin(sectorAngle) * 1;
+                vertices.push(-x, -y, -z*1.3);
+ 
+                // Calculate normals
+                var nx = x / radius;
+                var ny = y / radius;
+                var nz = z / radius;
+                normals.push(nx, ny, nz);
+ 
+                // Calculate texture coordinates
+                var s = j / sectorCount;
+                var t = i / stackCount/2;
+                texCoords.push(s, t);
+                colors.push(0.0, 0.4, 0.0);
+            }
+        }
+ 
+        for (var i = 0; i <= segments; i++) {
+            indices.push(0); // Bottom center vertex
+            indices.push(i * 2); // Current bottom vertex
+            indices.push((i + 1) * 2); // Next bottom vertex
+ 
+            indices.push(1); // Apex vertex
+            indices.push(i * 2 + 1); // Current top vertex
+            indices.push((i + 1) * 2 + 1); // Next top vertex
+ 
+            indices.push(i * 2); // Current bottom vertex
+            indices.push((i + 1) * 2); // Next bottom vertex
+            indices.push((i + 1) * 2 + 1); // Next top vertex
+ 
+            indices.push(i * 2); // Current bottom vertex
+            indices.push((i + 1) * 2 + 1); // Next top vertex
+            indices.push(i * 2 + 1); // Current top vertex
+ 
+        }
+        for (var i = 0; i < stackCount/2; ++i) {
+            for (var j = 0; j < sectorCount; ++j) {
+                var k1 = i * (sectorCount + 1) + j;
+                var k2 = k1 + sectorCount + 1;
+ 
+                // 2 triangles per sector excluding first and last stacks
+                if (i !== 0) {
+                    indices.push(k1, k2, k1 + 1);
+                }
+                if (i !== (stackCount/2 - 1)) {
+                    indices.push(k1 + 1, k2, k2 + 1);
+                }
+            }
+        }
+        return [vertices,indices,colors]
     },
-    mark:function(){
 
-    },
     tails:function(){
         var radius = 0.25;
         var height = 6.0;
@@ -665,10 +749,10 @@ var hand = {
             var y = radius * Math.sin(theta);
             vertices.push(x, y, 0, 0.1, 0.1, 0.2); // Bottom circle
              // Apex
-             colors.push(0.2, 0.2, 0.4);
+             colors.push(0.0, 0.4, 0.0);
             //  cone_vertex.push(0.45, 0, height, 0.1, 0.1, 0.2);
             vertices.push(x * 1.01 , y, height/2, 0.1, 0.1, 0.2);
-            colors.push(0.2, 0.2, 0.4);
+            colors.push(0.0, 0.4, 0.0);
         }
     
     
@@ -690,6 +774,9 @@ var hand = {
             indices.push(i * 2 + 1); // Current top vertex
     
         }
+
+    
+
         return [vertices,indices, colors]
     },
     left_hand2:function(){
@@ -715,10 +802,10 @@ var hand = {
             var y = radius * Math.sin(theta);
             vertices.push(x * 1.01  , y, height/2, 0.1, 0.1, 0.2); // Bottom circle
              // Apex
-             colors.push(0.2, 0.2, 0.4);
+             colors.push(0.0, 0.4, 0.0);
             //  cone_vertex.push(0.45, 0, height, 0.1, 0.1, 0.2);
             vertices.push(x * 1.01  , y, height, 0.1, 0.1, 0.2);
-            colors.push(0.0, 0.0, 0.0);
+            colors.push(0.0, 0.4, 0.0);
         }
     
     
@@ -765,10 +852,10 @@ var hand = {
             var y = radius * Math.sin(theta);
             vertices1.push(x, y, 0, 0.1, 0.1, 0.2); // Bottom circle
              // Apex
-             colors1.push(0.2, 0.2, 0.4);
+             colors1.push(0.0, 0.4, 0.0);
             //  cone_vertex.push(0.45, 0, height, 0.1, 0.1, 0.2);
             vertices1.push(x * 1.01 , y, height/2, 0.1, 0.1, 0.2);
-            colors1.push(0.2, 0.2, 0.4);
+            colors1.push(0.0, 0.4, 0.0);
         }
     
     
@@ -815,10 +902,10 @@ var hand = {
             var y = radius * Math.sin(theta);
             vertices1.push(x * 1.01  , y, height/2, 0.1, 0.1, 0.2); // Bottom circle
              // Apex
-             colors1.push(0.2, 0.2, 0.4);
+             colors1.push(0.0, 0.4, 0.0);
             //  cone_vertex.push(0.45, 0, height, 0.1, 0.1, 0.2);
             vertices1.push(x * 1.01 , y, height, 0.1, 0.1, 0.2);
-            colors1.push(0.0, 0.0, 0.0);
+            colors1.push(0.0, 0.4, 0.0);
         }
     
     
@@ -994,7 +1081,7 @@ var hand = {
                 var s = j / sectorCount;
                 var t = i / stackCount/2;
                 texCoords.push(s, t);
-                colors.push(0.0, 0.0, 0.0);
+                colors.push(0.0, 0.4, 0.0);
             }
         }
         for (var i = 0; i < stackCount; ++i) {
@@ -1051,7 +1138,7 @@ var hand = {
                 var s = j / sectorCount;
                 var t = i / stackCount/2;
                 texCoords.push(s, t);
-                colors.push(0.2, 0.2, 0.4);
+                colors.push(0.0, 0.4, 0.0);
             }
         }
         for (var i = 0; i < stackCount; ++i) {
@@ -1070,11 +1157,190 @@ var hand = {
         }
         return [vertices,indices, colors]
     },
-    left_cloth:function(){
+    cloth1:function(){
+        
+    var a = 0.35; // Nilai skala untuk sumbu x
+    var b = 0.35; // Nilai skala untuk sumbu y
+    var c = 0.15; // Nilai skala untuk sumbu z
 
+    var numLongitudes = 50; 
+    var numLatitudes = 30; 
+    var hyperboloid_vertex = [];
+    var hyperboloid_faces = [];
+    var hyperboloid_colors = [];
+    var hyperboloid_vertex2 = [];
+    var hyperboloid_faces2 = [];
+    var hyperboloid_colors2 = [];
+
+    for (var latNumber = 0; latNumber <= numLatitudes; latNumber++) {
+        var theta = latNumber * Math.PI / numLatitudes;
+        var sinTheta = Math.sin(theta);
+        var cosTheta = Math.cos(theta);
+
+        for (var longNumber = 0; longNumber <= numLongitudes; longNumber++) {
+            var phi = longNumber * 2 * Math.PI / numLongitudes;
+            var sinPhi = Math.sin(phi);
+            var cosPhi = Math.cos(phi);
+
+            var x = a * cosPhi * Math.sqrt(1 + Math.pow(sinTheta, 2));
+            var y = b * sinPhi * Math.sqrt(1 + Math.pow(sinTheta, 2));
+            var z = c * sinTheta;
+
+
+            hyperboloid_vertex2.push(-x, -y, -z);
+            hyperboloid_colors2.push(0, 0.4, 0);
+            hyperboloid_vertex2.push(-x, -y, z);
+            hyperboloid_colors2.push(0, 0.4, 0);
+        }
+        for (var longNumber = 0; longNumber <= numLongitudes; longNumber++) {
+            var phi = longNumber * 2 * Math.PI / numLongitudes;
+            var sinPhi = Math.sin(phi);
+            var cosPhi = Math.cos(phi);
+
+            var x = a * cosPhi * Math.sqrt(1 + Math.pow(sinTheta, 2));
+            var y = b * sinPhi * Math.sqrt(1 + Math.pow(sinTheta, 2));
+            var z = c * sinTheta;
+            var r = Math.random(); // Randomize color components for each vertex
+            var g = Math.random();
+            var d = Math.random();
+            
+            hyperboloid_vertex.push(x, y, z);
+            hyperboloid_colors.push(0, 0.4,0);
+            hyperboloid_vertex.push(x, y, -z);
+            hyperboloid_colors.push(0, 0.4, 0);
+
+        }
+    }
+
+    for (var latNumber = 0; latNumber < numLatitudes; latNumber++) {
+        for (var longNumber = 0; longNumber < numLongitudes; longNumber++) {
+            var first = (latNumber * (numLongitudes + 1)) + longNumber;
+            var second = first + numLongitudes + 1;
+
+            hyperboloid_faces.push(first, second, first + 1);
+            hyperboloid_faces.push(second, second + 1, first + 1);
+            hyperboloid_faces2.push(first, second, first + 1);
+            hyperboloid_faces2.push(second, second + 1, first + 1);
+        }
+    }
+    return [hyperboloid_vertex,hyperboloid_faces,hyperboloid_colors,hyperboloid_vertex2,hyperboloid_faces,hyperboloid_colors];
     },
-    right_cloth:function(){
-
+    cloth2:function(){
+        var a = 0.35; // Nilai skala untuk sumbu x
+        var b = 0.35; // Nilai skala untuk sumbu y
+        var c = 1; // Nilai skala untuk sumbu z
+        var numLongitudes = 50; // Jumlah garis bujur yang akan digunakan untuk membagi ellipsoid
+        var numLatitudes = 30; // Jumlah garis lintang yang akan digunakan untuk membagi ellipsoid
+        var ellipsoid_vertex = [];
+        var ellipsoid_faces = [];
+        var ellipsoid_colors = [];
+        var ellipsoid_vertex2 = [];
+        var ellipsoid_faces2 = [];
+        var ellipsoid_colors2 = [];
+    
+        var ellipsoid_vertexX = [];
+        var ellipsoid_vertexY = [];
+        var ellipsoid_vertexZ = [];
+        var ellipsoid_faces = [];
+        for (var i = 0; i < 60; i++) {
+            ellipsoid_vertexX[i] = [];
+            ellipsoid_vertexY[i] = [];
+            ellipsoid_vertexZ[i] = [];
+        }
+        var i,j;
+            i=1;
+            
+            for(var u=-Math.PI;u<=Math.PI;u+=Math.PI/30)
+            {	j=1;
+                ellipsoid_vertexX[i] = [];
+                ellipsoid_vertexY[i] = [];
+                ellipsoid_vertexZ[i] = [];
+                for(var v=-Math.PI/2;v<Math.PI/2;v+=Math.PI/30)
+                {	
+                    ellipsoid_vertexX[i][j] = 0;
+                    ellipsoid_vertexY[i][j] = 0;
+                    ellipsoid_vertexZ[i][j] = 0;
+                    j+=1;
+                }
+                i+= 1;
+            }
+            
+            var i,j;
+            i=0;
+            for(var u=-Math.PI;u<=Math.PI;u+=Math.PI/30)
+            {	j=0;
+                for(var v=-Math.PI/2;v<Math.PI/2;v+=Math.PI/30)
+                {	
+               
+                    ellipsoid_vertex.push(a*v*Math.cos(u),b*v*Math.sin(u),c*v*v -5)
+                    ellipsoid_vertexX[i][j] = a*Math.cos(u);
+                    
+                    ellipsoid_vertexY[i][j] = b*Math.sin(u);
+                    ellipsoid_vertexZ[i][j] = c*v*v -5;
+                    ellipsoid_colors.push(0.0, 1.0, 0.0);
+                    
+    
+                    j+=1;
+                }
+                i+= 1;
+            }
+    
+        
+            for (var i = 0; i <= numLatitudes; i++) {
+                for (var j = 0; j <= numLongitudes; j++) {
+                    var first = i * (numLongitudes + 1) + j;
+                    var second = first + numLongitudes + 1;
+                    
+                    // Define indices for the two triangles forming each square
+                    ellipsoid_faces.push(first);
+                    ellipsoid_faces.push(second);
+                    ellipsoid_faces.push(first + 1);
+    
+                    ellipsoid_faces.push(first + 1);
+                    ellipsoid_faces.push(second);
+                    ellipsoid_faces.push(second + 1);
+    
+                }
+            }
+        
+            var i,j;
+            i=0;
+            for(var u=-Math.PI;u<=Math.PI;u+=Math.PI/30)
+            {	j=0;
+                for(var v=-Math.PI/2;v<Math.PI/2;v+=Math.PI/30)
+                {	
+      
+                    ellipsoid_vertex2.push(-a*v*Math.cos(u),-b*v*Math.sin(u),-c*v*v)
+                    ellipsoid_vertexX[i][j] = -a*Math.cos(u);
+                    
+                    ellipsoid_vertexY[i][j] = -b*Math.sin(u);
+                    ellipsoid_vertexZ[i][j] = -c*v*v;
+                    ellipsoid_colors2.push(0.0, 1.0, 0.0);
+                    
+    
+                    j+=1;
+                }
+                i+= 1;
+            }
+    
+        
+            for (var i = 0; i <= numLatitudes; i++) {
+                for (var j = 0; j <= numLongitudes; j++) {
+                    var first = i * (numLongitudes + 1) + j;
+                    var second = first + numLongitudes + 1;
+                    
+                    // Define indices for the two triangles forming each square
+                    ellipsoid_faces2.push(first);
+                    ellipsoid_faces2.push(second);
+                    ellipsoid_faces2.push(first + 1);
+    
+                    ellipsoid_faces2.push(first + 1);
+                    ellipsoid_faces2.push(second);
+                    ellipsoid_faces2.push(second + 1);
+    
+                }
+            }
+            return [ellipsoid_vertex,ellipsoid_faces,ellipsoid_colors,ellipsoid_vertex2,ellipsoid_faces2,ellipsoid_colors2];
     }
 };
 var faces = {
@@ -1343,5 +1609,117 @@ var faces = {
        var color = [0.7,0,0,0.7,0,0,0.7,0,0,0.7,0,0,0.7,0,0,0.7,0,0,0.7,0,0,0.7,0,0,0.7,0,0,0.7,0,0,0.7,0,0,0.7,0,0];
        return [point,color,0];
 
-    }
+    },
+
+    
 };
+var baloon = {
+    baloons:function(){
+        var numLongitudes = 30; 
+    var numLatitudes = 10000; 
+    var faces_vertex = [];
+    var faces_faces = [];
+    var faces_colors = [];
+    var indices = [];
+    var sectorCount = 30;
+    var stackCount = 10000; 
+    var faces_vertexX = [];
+    var radius = 0.5;
+    var height = 3;
+    var faces_vertexY = [];
+    var faces_vertexZ = [];
+    var faces_faces = [];
+    var segments = 30;
+    for (var i = 0; i < 60; i++) {
+        faces_vertexX[i] = [];
+        faces_vertexY[i] = [];
+        faces_vertexZ[i] = [];
+    }
+    var i,j;
+        i=1;
+        
+        for(var u=-Math.PI;u<=Math.PI + 0.175;u+=Math.PI/30)
+        {	j=1;
+            faces_vertexX[i] = [];
+            faces_vertexY[i] = [];
+            faces_vertexZ[i] = [];
+            for(var v=-Math.PI/2;v<=Math.PI/2;v+=Math.PI/30)
+            {	
+                faces_vertexX[i][j] = 0;
+                faces_vertexY[i][j] = 0;
+                faces_vertexZ[i][j] = 0;
+                j+=1;
+            }
+            i+= 1;
+        }
+        
+        var i,j;
+        i=0;
+        for(var u=-Math.PI;u<=Math.PI + 0.175;u+=Math.PI/30)
+        {	j=0;
+            
+            for(var v=-Math.PI/2;v<=Math.PI/2;v+=Math.PI/30)
+            {	
+                
+                faces_vertex.push(2*Math.cos(v)*Math.cos(u),1.5*Math.cos(v)*Math.sin(u),2.5*Math.sin(v),0.2,0.2,0.4)
+                faces_vertexX[i][j] = (2.5*Math.cos(v)*Math.cos(u));
+                
+                faces_vertexY[i][j] = (3*Math.cos(v)*Math.sin(u));
+                faces_vertexZ[i][j] = (2*Math.sin(v));
+
+                var r = Math.random(); // Randomize color components for each vertex
+                var g = Math.random();
+                var d = Math.random();
+                faces_colors.push(1,0,0)
+                j+=1;
+            }
+            i+= 1;
+        }
+
+        for (var i = 0; i <= numLatitudes; i++) {
+            for (var j = 0; j <= numLongitudes; j++) {
+                var first = i * (numLongitudes + 1) + j;
+                var second = first + numLongitudes + 1;
+                
+                // Define indices for the two triangles forming each square
+                faces_faces.push(first);
+                faces_faces.push(second);
+                faces_faces.push(first + 1);
+                
+                faces_faces.push(second);
+                faces_faces.push(second + 1);
+                faces_faces.push(first + 1);
+            }
+        }
+        for (var i = 0; i <= segments; i++) {
+            var theta = (i / segments) * 2 * Math.PI;
+            var x = radius * Math.cos(theta);
+            var y = radius * Math.sin(theta);
+            faces_vertex.push(0, 0, 0, 0.1, 0.1, 0.2); // Bottom circle
+             // Apex
+             faces_colors.push(1, 0.0, 0.0);
+            //  cone_vertex.push(0.45, 0, height, 0.1, 0.1, 0.2);
+            faces_vertex.push(x, y, height, 0.1, 0.1, 0.2);
+            faces_colors.push(1, 0.0, 0.0);
+        }
+        for (var i = 0; i < segments; i++) {
+            faces_faces.push(0); // Bottom center vertex
+            faces_faces.push(i * 2); // Current bottom vertex
+            faces_faces.push((i + 1) * 2); // Next bottom vertex
+    
+            faces_faces.push(1); // Apex vertex
+            faces_faces.push(i * 2 + 1); // Current top vertex
+            faces_faces.push((i + 1) * 2 + 1); // Next top vertex
+    
+            faces_faces.push(i * 2); // Current bottom vertex
+            faces_faces.push((i + 1) * 2); // Next bottom vertex
+            faces_faces.push((i + 1) * 2 + 1); // Next top vertex
+    
+            faces_faces.push(i * 2); // Current bottom vertex
+            faces_faces.push((i + 1) * 2 + 1); // Next top vertex
+            faces_faces.push(i * 2 + 1); // Current top vertex
+    
+        }
+        return [faces_vertex,faces_faces,faces_colors];
+    }
+}
