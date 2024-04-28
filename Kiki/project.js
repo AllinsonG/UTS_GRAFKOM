@@ -295,6 +295,21 @@ function main(){
     var mouth = new faces.mouth();
     var cloth = new bodys.clothw();
     var balon = new baloon.baloons();
+    
+
+
+
+
+    var trees = new map.tree();
+    var batangs = new map.batang();
+
+    var peta = new map.road();
+
+
+
+
+
+
 
     //SHADERS
     var shader_vertex_source = `
@@ -361,6 +376,16 @@ function main(){
     var ekor1 = new MyObject(tail1[0],tail1[1],tail1[2],shader_vertex_source,shader_fragment_source);
     var mulut = new MyObject(mouth[0],mouth[1],mouth[2],shader_vertex_source,shader_fragment_source);
     var balons = new MyObject(balon[0], balon[1], balon[2], shader_vertex_source, shader_fragment_source);
+    var pohon = new MyObject(trees[0], trees[1], trees[2], shader_vertex_source, shader_fragment_source);
+    var batang1 = new MyObject(batangs[0], batangs[1], batangs[2], shader_vertex_source,shader_fragment_source);
+    var pohon2 = new MyObject(trees[0], trees[1], trees[2], shader_vertex_source, shader_fragment_source);
+    var batang2 = new MyObject(batangs[0], batangs[1], batangs[2], shader_vertex_source,shader_fragment_source);
+    var pohon3 = new MyObject(trees[0], trees[1], trees[2], shader_vertex_source, shader_fragment_source);
+    var batang3 = new MyObject(batangs[0], batangs[1], batangs[2], shader_vertex_source,shader_fragment_source);
+    
+    var petas = new MyObject(peta[0], peta[1], peta[2], shader_vertex_source, shader_fragment_source);
+
+
 
     tanganL.addChild(tangan2L);
     tanganR.addChild(tangan2R);
@@ -380,7 +405,7 @@ function main(){
     
     var VIEWMATRIX = LIBS.get_I4();
 
-    LIBS.translateZ(VIEWMATRIX,-30);
+    LIBS.translateZ(VIEWMATRIX,-40);
     var slow = 0;
     var slow1 = 0;
     var slow2 = 0;
@@ -401,6 +426,7 @@ function main(){
     var temp = 0;
     var temp1 = 0;
     //DRAWING
+    
     GL.clearColor(0.0,0.0,0.0,0.0);
     GL.enable(GL.DEPTH_TEST);
     GL.depthFunc(GL.LEQUAL);
@@ -418,10 +444,17 @@ function main(){
             }   
           
         }
-        
+   
 
 
         time_prev = time;
+        petas.setIdentifyMove();
+        pohon.setIdentifyMove();
+        batang1.setIdentifyMove();
+        pohon2.setIdentifyMove();
+        batang2.setIdentifyMove();
+        pohon3.setIdentifyMove();
+        batang3.setIdentifyMove();
         wajah.setIdentifyMove();
         tanganL.setIdentifyMove();
         tanganR.setIdentifyMove();
@@ -505,11 +538,19 @@ function main(){
         baju3R.MOVEMATRIX = LIBS.mul(baju3R.MOVEMATRIX, temps);
         baju.MOVEMATRIX = LIBS.mul(baju.MOVEMATRIX,temps);
         balons.MOVEMATRIX = LIBS.mul(balons.MOVEMATRIX, temps);
-
+        pohon.MOVEMATRIX = LIBS.mul(pohon.MOVEMATRIX,temps);
+        batang1.MOVEMATRIX = LIBS.mul(batang1.MOVEMATRIX,temps);
+        pohon2.MOVEMATRIX = LIBS.mul(pohon2.MOVEMATRIX,temps);
+        batang2.MOVEMATRIX = LIBS.mul(batang2.MOVEMATRIX,temps);
+        pohon3.MOVEMATRIX = LIBS.mul(pohon3.MOVEMATRIX,temps);
+        batang3.MOVEMATRIX = LIBS.mul(batang3.MOVEMATRIX,temps);
+        petas.MOVEMATRIX = LIBS.mul(petas.MOVEMATRIX,temps);
 
 
 
         //Default
+        glMatrix.mat4.rotateX(petas.MOVEMATRIX, petas.MOVEMATRIX,LIBS.degToRad(-90));
+        glMatrix.mat4.translate(petas.MOVEMATRIX,petas.MOVEMATRIX,[0,0,-6.5]);
         glMatrix.mat4.rotateZ(tanganL.MOVEMATRIX,tanganL.MOVEMATRIX,LIBS.degToRad(-45));
         glMatrix.mat4.rotateX(tanganL.MOVEMATRIX,tanganL.MOVEMATRIX,LIBS.degToRad(90));
         glMatrix.mat4.rotateZ(tanganL.child[0].MOVEMATRIX,tanganL.child[0].MOVEMATRIX,LIBS.degToRad(-45));
@@ -551,6 +592,19 @@ function main(){
         glMatrix.mat4.rotateY(bajuL.MOVEMATRIX,bajuL.MOVEMATRIX,LIBS.degToRad(-135));
         glMatrix.mat4.rotateY(bajuL.child[0].MOVEMATRIX,bajuL.child[0].MOVEMATRIX,LIBS.degToRad(-135));
         glMatrix.mat4.rotateX(balons.MOVEMATRIX,balons.MOVEMATRIX,LIBS.degToRad(-180));
+        glMatrix.mat4.rotateX(pohon.MOVEMATRIX,pohon.MOVEMATRIX,LIBS.degToRad(90));
+        glMatrix.mat4.translate(pohon.MOVEMATRIX,pohon.MOVEMATRIX,[-20.0,-15.0,-20.0]);
+        glMatrix.mat4.rotateX(batang1.MOVEMATRIX,batang1.MOVEMATRIX,LIBS.degToRad(90));
+        glMatrix.mat4.translate(batang1.MOVEMATRIX,batang1.MOVEMATRIX,[-20.0,-15.0,-19]);
+        glMatrix.mat4.rotateX(pohon2.MOVEMATRIX,pohon2.MOVEMATRIX,LIBS.degToRad(90));
+        glMatrix.mat4.translate(pohon2.MOVEMATRIX,pohon2.MOVEMATRIX,[0.0,-20.0,-20.0]);
+        glMatrix.mat4.rotateX(batang2.MOVEMATRIX,batang2.MOVEMATRIX,LIBS.degToRad(90));
+        glMatrix.mat4.translate(batang2.MOVEMATRIX,batang2.MOVEMATRIX,[0.0,-20.0,-19.0]);
+        glMatrix.mat4.rotateX(pohon3.MOVEMATRIX,pohon3.MOVEMATRIX,LIBS.degToRad(90));
+        glMatrix.mat4.translate(pohon3.MOVEMATRIX,pohon3.MOVEMATRIX,[20.0,-15.0,-20.0]);
+        glMatrix.mat4.rotateX(batang3.MOVEMATRIX,batang3.MOVEMATRIX,LIBS.degToRad(90));
+        glMatrix.mat4.translate(batang3.MOVEMATRIX,batang3.MOVEMATRIX,[20.0,-15.0,-19.0]);
+
 
 
 
@@ -654,7 +708,7 @@ function main(){
             glMatrix.mat4.translate(bajuR.MOVEMATRIX,bajuR.MOVEMATRIX,[0,c,0]);
             glMatrix.mat4.translate(bajuR.child[0].MOVEMATRIX,bajuR.child[0].MOVEMATRIX,[0,c,0]);
             glMatrix.mat4.translate(baju.MOVEMATRIX,baju.MOVEMATRIX,[0,c,0]);
-            }
+        }
         
 
         if (time >= 250 && time <500){
@@ -841,6 +895,8 @@ function main(){
 
 
 
+        
+
         //Menganggukkan kepala
         glMatrix.mat4.translate(telingaR.MOVEMATRIX,telingaR.MOVEMATRIX,[-0.8,0.0,-4.8]);
         glMatrix.mat4.translate(telingaL.MOVEMATRIX,telingaL.MOVEMATRIX,[0.8,0.0,-4.8]);
@@ -951,7 +1007,6 @@ function main(){
 
 
 
-
         //Niup balon serta melambai tangan
         //Scale
         glMatrix.mat4.rotateX(balons.MOVEMATRIX,balons.MOVEMATRIX,LIBS.degToRad(30));
@@ -964,7 +1019,7 @@ function main(){
 
         if (time >= 4050 && time <5800){
 
-            glMatrix.mat4.scale(balons.MOVEMATRIX,balons.MOVEMATRIX,[time*0.0003,time*0.0003,time*0.0003]);
+            glMatrix.mat4.scale(balons.MOVEMATRIX,balons.MOVEMATRIX,[time*0.000175,time*0.000175,time*0.000175]);
         }
         glMatrix.mat4.translate(tanganL.child[0].MOVEMATRIX,tanganL.child[0].MOVEMATRIX,[0,0.0,1.45]);
         glMatrix.mat4.translate(bajuL.child[0].MOVEMATRIX,bajuL.child[0].MOVEMATRIX,[0,0.0,-1.45]);
@@ -1045,6 +1100,7 @@ function main(){
             glMatrix.mat4.rotateY(tanganL.child[0].MOVEMATRIX,tanganL.child[0].MOVEMATRIX,LIBS.degToRad(-x));
             glMatrix.mat4.rotateY(bajuL.child[0].MOVEMATRIX,bajuL.child[0].MOVEMATRIX,LIBS.degToRad(+x));
             glMatrix.mat4.rotateY(bajuL.MOVEMATRIX,bajuL.MOVEMATRIX,LIBS.degToRad(x));
+
         }
         glMatrix.mat4.rotateY(bajuL.child[0].MOVEMATRIX,bajuL.child[0].MOVEMATRIX,LIBS.degToRad(-test4));
         glMatrix.mat4.rotateY(bajuL.MOVEMATRIX,bajuL.MOVEMATRIX,LIBS.degToRad(-test4));
@@ -1057,10 +1113,20 @@ function main(){
 
 
 
+
+
+
+
+
+
+
+
+
+
         GL.viewport(0,0,CANVAS.width,CANVAS.height);
         GL.clear(GL.COLOR_BUFFER_BIT);
 
-
+        petas.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
         wajah.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
         tanganL.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
         tanganL.child[0].setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
@@ -1098,9 +1164,16 @@ function main(){
         baju3R.child[0].setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
         baju.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
         balons.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
+        pohon.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
+        batang1.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
+        pohon2.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
+        batang2.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
+        pohon3.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
+        batang3.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
 
 
 
+        petas.draw();
         wajah.draw();
         hidung.draw();
         mataL.draw();
@@ -1123,6 +1196,13 @@ function main(){
         bajuR.draw();
         baju.draw();
         balons.draw();
+        pohon.draw();
+        batang1.draw();
+        pohon2.draw();
+        batang2.draw();
+        pohon3.draw();
+        batang3.draw();
+
         // baju3L.draw();
         // baju3R.draw();
 
