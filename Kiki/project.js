@@ -295,14 +295,13 @@ function main(){
     var mouth = new faces.mouth();
     var cloth = new bodys.clothw();
     var balon = new baloon.baloons();
-    
 
 
 
 
     var trees = new map.tree();
     var batangs = new map.batang();
-
+    var matahari = new map.sun();
     var peta = new map.road();
 
 
@@ -384,7 +383,7 @@ function main(){
     var batang3 = new MyObject(batangs[0], batangs[1], batangs[2], shader_vertex_source,shader_fragment_source);
     
     var petas = new MyObject(peta[0], peta[1], peta[2], shader_vertex_source, shader_fragment_source);
-
+    var mataharis = new MyObject(matahari[0], matahari[1], matahari[2], shader_vertex_source, shader_fragment_source);
 
 
     tanganL.addChild(tangan2L);
@@ -425,6 +424,7 @@ function main(){
     var test4 = 0;
     var temp = 0;
     var temp1 = 0;
+    var h = 0;
     //DRAWING
     
     GL.clearColor(0.0,0.0,0.0,0.0);
@@ -493,6 +493,7 @@ function main(){
         baju3R.child[0].setIdentifyMove();
         baju.setIdentifyMove();
         balons.setIdentifyMove();
+        mataharis.setIdentifyMove();
         temps = LIBS.get_I4();
         LIBS.rotateY(temps,THETA);
         LIBS.rotateX(temps,PHI);
@@ -545,7 +546,7 @@ function main(){
         pohon3.MOVEMATRIX = LIBS.mul(pohon3.MOVEMATRIX,temps);
         batang3.MOVEMATRIX = LIBS.mul(batang3.MOVEMATRIX,temps);
         petas.MOVEMATRIX = LIBS.mul(petas.MOVEMATRIX,temps);
-
+        mataharis.MOVEMATRIX = LIBS.mul(mataharis.MOVEMATRIX, temps);
 
 
         //Default
@@ -604,6 +605,7 @@ function main(){
         glMatrix.mat4.translate(pohon3.MOVEMATRIX,pohon3.MOVEMATRIX,[20.0,-15.0,-20.0]);
         glMatrix.mat4.rotateX(batang3.MOVEMATRIX,batang3.MOVEMATRIX,LIBS.degToRad(90));
         glMatrix.mat4.translate(batang3.MOVEMATRIX,batang3.MOVEMATRIX,[20.0,-15.0,-19.0]);
+        glMatrix.mat4.translate(mataharis.MOVEMATRIX, mataharis.MOVEMATRIX, [0,0,-70]);
 
 
 
@@ -659,7 +661,20 @@ function main(){
 
 
         //Walk
-
+        glMatrix.mat4.translate(mataharis.MOVEMATRIX, mataharis.MOVEMATRIX, [0,0,70]);
+        if (time>0){
+            h += x;
+         
+            if ((h/180)%2 == 0){
+                CANVAS.style.backgroundColor = "blue";
+            }
+            else if((h/180)%2==1){
+                CANVAS.style.backgroundColor = "darkblue";
+            }
+            glMatrix.mat4.rotateX(mataharis.MOVEMATRIX, mataharis.MOVEMATRIX, LIBS.degToRad(x));
+        }
+        glMatrix.mat4.rotateX(mataharis.MOVEMATRIX, mataharis.MOVEMATRIX, LIBS.degToRad(h));
+        glMatrix.mat4.translate(mataharis.MOVEMATRIX, mataharis.MOVEMATRIX, [0,0,-70]);
 
         if (time > 0){
 
@@ -1026,6 +1041,7 @@ function main(){
         glMatrix.mat4.translate(bajuL.MOVEMATRIX,bajuL.MOVEMATRIX,[0,0.0,-1.25]);
         glMatrix.mat4.translate(tanganL.child[1].MOVEMATRIX,tanganL.child[1].MOVEMATRIX,[0,0.0,-1.45]);
         
+        
         if (time >= 4050 && time <5800){
             test1 += -x;
             glMatrix.mat4.rotateY(tanganL.child[1].MOVEMATRIX,tanganL.child[1].MOVEMATRIX,LIBS.degToRad(x));
@@ -1170,7 +1186,7 @@ function main(){
         batang2.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
         pohon3.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
         batang3.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
-
+        mataharis.setUniformmatrix4(PROJMATRIX,VIEWMATRIX);
 
 
         petas.draw();
@@ -1202,7 +1218,7 @@ function main(){
         batang2.draw();
         pohon3.draw();
         batang3.draw();
-
+        mataharis.draw();
         // baju3L.draw();
         // baju3R.draw();
 
