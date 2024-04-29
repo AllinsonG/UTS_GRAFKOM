@@ -161,5 +161,69 @@ var map = {
         );
 
         return [vertices, indices, colors];
+    },
+    sun:function(){
+        var vertices = [];
+        var normals = [];
+        var colors = [];
+        var texCoords = [];
+        var indices = [];
+        var lineIndices = [];
+        var radius = 5.0; // Adjust the radius of the sphere as needed
+        var sectorCount = 72; // Number of sectors
+        var stackCount = 24; // Number of stacks
+    
+        var PI = Math.PI;
+        var sectorStep = 2 * PI / sectorCount;
+        var stackStep = PI / stackCount;
+        var sectorAngle, stackAngle;
+        var r = Math.random(); // Randomize color components for each vertex
+        var g = Math.random();
+        var d = Math.random();
+        for (var i = 0; i <= stackCount; ++i) {
+            stackAngle = PI / 2 - i * stackStep;
+            var xy = radius * Math.cos(stackAngle);
+            var z = radius * Math.sin(stackAngle);
+    
+            for (var j = 0; j <= sectorCount; ++j) {
+                sectorAngle = j * sectorStep;
+                var x = xy * Math.cos(sectorAngle);
+                var y = xy * Math.sin(sectorAngle);
+                vertices.push(x, y, z);
+    
+                // Calculate normals
+                var nx = x / radius;
+                var ny = y / radius;
+                var nz = z / radius;
+                normals.push(nx, ny, nz);
+    
+                // Calculate texture coordinates
+                var s = j / sectorCount;
+                var t = i / stackCount;
+                texCoords.push(s, t);
+                
+                    
+                colors.push(1, 1, 0);
+                r = r + 0.0011;
+                g = g + 0.0011;
+                d = d + 0.0011;
+            }
+        }
+    
+        for (var i = 0; i < stackCount; ++i) {
+            for (var j = 0; j < sectorCount; ++j) {
+                var k1 = i * (sectorCount + 1) + j;
+                var k2 = k1 + sectorCount + 1;
+    
+                // 2 triangles per sector excluding first and last stacks
+                if (i !== 0) {
+                    indices.push(k1, k2, k1 + 1);
+                }
+                if (i !== (stackCount - 1)) {
+                    indices.push(k1 + 1, k2, k2 + 1);
+                }
+            }
+        }
+        return [vertices, indices, colors];
     }
 }
